@@ -1,5 +1,11 @@
 package main
 
+import (
+	"fmt"
+)
+
 func main() {
-	getWebsiteByRanking(0)
+	const numberOfWebsitesToCheck, passCheckThreshhold int = 3, 2
+	result := runInternetCheck(numberOfWebsitesToCheck, passCheckThreshhold)
+	fmt.Println(result)
 }

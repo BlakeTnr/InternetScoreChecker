@@ -23,12 +23,12 @@ func readWebsiteData(fileLocation string) []byte {
 }
 
 // Starts at 0, Max is 999
-func getWebsiteByRanking(number int) interface{} {
+func getWebsiteByRanking(number int) string {
 	// Add error handling?
 
 	byteValue := readWebsiteData("./top1000websites.json")
 
-	var result map[string][]map[string]interface{}
+	var result map[string][]map[string]string
 	json.Unmarshal([]byte(byteValue), &result)
 
 	sitesArray := result["top_sites"]
