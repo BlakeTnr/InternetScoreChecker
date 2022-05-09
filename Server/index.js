@@ -35,7 +35,7 @@ function updateCheck(client) {
 }
 
 app.get('/', (req, res) => {
-    const client = new Client(getClientIPV4Address(), null)
+    const client = new Client(getClientIPV4Address(req), null)
     client.updateLastCheckTime()
     updateCheck(client)
     res.send(client)
