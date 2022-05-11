@@ -1,7 +1,8 @@
 import json
 
-inputListLocation = "C:\\Users\\Blake\\Desktop\\Files\\Programming\\Projects\\Learning\\Go\\InternetScoreChecker\\Client\\top2000.json"
-blockListLocation = "C:\\Users\\Blake\\Desktop\\Files\\Programming\\Projects\\Learning\\Go\\InternetScoreChecker\\Tools\\Blocklists\\adult\\domains"
+inputListLocation = "C:\\Users\\Blake\\Desktop\\Files\\Programming\\Projects\\Learning\\GO\\InternetScoreChecker\\Client\\top2000.json"
+blockListLocation = "C:\\Users\\Blake\\Desktop\\Files\\Programming\\Projects\\Learning\\GO\\InternetScoreChecker\\Tools\\Blocklists\\adult\\domains"
+outputLocation = "C:\\Users\\Blake\\Desktop\\Files\\Programming\\Projects\\Learning\\GO\\InternetScoreChecker\\Tools\\Blocklists\\adult\\"
 
 def main():
     inputListFile = open(inputListLocation, "r")
@@ -18,6 +19,9 @@ def main():
                 topSites.remove(site)
 
     print(topSites)
+    outputFile = open("outputLocation.txt", "w+")
+    json.dump(topSites, outputFile)
+    outputFile.close
 
     inputListFile.close()
     blockListFile.close()
