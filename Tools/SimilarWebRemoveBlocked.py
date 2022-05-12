@@ -1,22 +1,32 @@
 import json
-
+from multiprocessing.connection import Connection
+import requests
+import joblib
 inputListLocation = "C:\\Users\\Blake\\Desktop\\Files\\Programming\\Projects\\Learning\\GO\\InternetScoreChecker\\Client\\top2000.json"
-blockListLocation = "C:\\Users\\Blake\\Desktop\\Files\\Programming\\Projects\\Learning\\GO\\InternetScoreChecker\\Tools\\Blocklists\\adult\\domains"
-outputLocation = "C:\\Users\\Blake\\Desktop\\Files\\Programming\\Projects\\Learning\\GO\\InternetScoreChecker\\Tools\\Blocklists\\adult\\"
+
+badSites = []
+def check(site):
+    print(site["domain"] + ": " + str(site["rank"]))
+    try:
+        response = requests.get("https://www." + site["domain"])
+    except:
+        print("Bad site detected: " + site["domain"])
+        global badSites
+        badSites.append(site)
 
 def main():
     inputListFile = open(inputListLocation, "r")
-    blockListFile = open(blockListLocation, "r")
     
     inputJson = json.loads(inputListFile.readline())
     topSites = inputJson["top_sites"]
 
-    for blockedDomain in blockListFile:
-        for site in topSites:
-            domain = site["domain"]
-            if(domain == blockedDomain.strip()):
-                print(domain + " has been removed")
-                topSites.remove(site)
+    for site in topSites:
+        check(site)
+
+    global badSites
+    for badSite in badSites:
+        topSites.remove(badSite)
+    
 
     print(topSites)
     outputFile = open("outputLocation.txt", "w+")
@@ -24,6 +34,5 @@ def main():
     outputFile.close
 
     inputListFile.close()
-    blockListFile.close()
 
 main()
