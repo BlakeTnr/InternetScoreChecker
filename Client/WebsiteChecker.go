@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 )
 
 func runInternetCheck(numberOfChecks int, checksNeededToPass int) bool {
@@ -12,12 +14,16 @@ func runInternetCheck(numberOfChecks int, checksNeededToPass int) bool {
 func getScore(numberOfChecks int) int {
 	var score int
 	for i := 0; i < numberOfChecks; i++ {
-		domain := getWebsiteByRanking(i)
+		domain := getWebsiteByIndex(i)
 		result := canReachWebsite(domainToUrl(domain))
 		if result {
+			fmt.Println(domain + " " + "Passed")
 			score++
+		} else {
+			fmt.Println(domain + " " + "Failed")
 		}
 	}
+	fmt.Println("Score: " + strconv.FormatInt(int64(score), 10))
 	return score
 }
 

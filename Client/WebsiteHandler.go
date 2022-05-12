@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"os"
 )
@@ -22,17 +21,15 @@ func readWebsiteData(fileLocation string) []byte {
 	return byteValue
 }
 
-// Starts at 0, Max is 999
-func getWebsiteByRanking(number int) string {
+func getWebsiteByIndex(number int) string {
 	// Add error handling?
 
-	byteValue := readWebsiteData("./top1000websites.json")
+	byteValue := readWebsiteData("./manuallyReviewed.json")
 
-	var result map[string][]map[string]string
+	var result []map[string]string
 	json.Unmarshal([]byte(byteValue), &result)
 
-	sitesArray := result["top_sites"]
-	site := sitesArray[number]["domain"]
-	fmt.Println(site) // Debug line
+	sitesArray := result[number]
+	site := sitesArray["domain"]
 	return site
 }
