@@ -1,15 +1,15 @@
 import json
 from multiprocessing.connection import Connection
 import requests
-import joblib
+from ping3 import ping
 inputListLocation = "C:\\Users\\Blake\\Desktop\\Files\\Programming\\Projects\\Learning\\GO\\InternetScoreChecker\\Client\\top2000.json"
 
 badSites = []
 def check(site):
     print(site["domain"] + ": " + str(site["rank"]))
-    try:
-        response = requests.get("https://www." + site["domain"])
-    except:
+    r = ping(site["domain"])
+
+    if r == False:
         print("Bad site detected: " + site["domain"])
         global badSites
         badSites.append(site)
