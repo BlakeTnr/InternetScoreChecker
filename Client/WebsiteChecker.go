@@ -2,19 +2,24 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"net/http"
 	"strconv"
+	"time"
 )
 
-func runInternetCheck(numberOfChecks int, checksNeededToPass int) bool {
-	score := getScore(numberOfChecks)
+func runInternetCheck(numberOfChecks int, checksNeededToPass int, datasetRange int) bool {
+	score := getScore(numberOfChecks, datasetRange)
 	return score >= checksNeededToPass
 }
 
-func getScore(numberOfChecks int) int {
+func getScore(numberOfChecks int, datasetRange int) int {
+	rand.Seed(time.Now().UnixNano())
 	var score int
 	for i := 0; i < numberOfChecks; i++ {
-		domain := getWebsiteByIndex(i)
+		randomIndex := rand.Intn(datasetRange);
+		fmt.Println(randomIndex)
+		domain := getWebsiteByIndex(randomIndex)
 		result := canReachWebsite(domainToUrl(domain))
 		if result {
 			fmt.Println(domain + " " + "Passed")
