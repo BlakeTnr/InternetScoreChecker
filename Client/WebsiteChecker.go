@@ -2,10 +2,8 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 func runInternetCheck(numberOfChecks int, checksNeededToPass int, datasetRange int) bool {
@@ -13,17 +11,11 @@ func runInternetCheck(numberOfChecks int, checksNeededToPass int, datasetRange i
 	return score >= checksNeededToPass
 }
 
-func runChecks() { // Add run checks script to seperate getSocer. Have this return a object of the domain and ifSuccessful.
-	
-}
-
 func getScore(numberOfChecks int, datasetRange int) int {
-	rand.Seed(time.Now().UnixNano())
 	var score int
 	var randomNumbers = getRandomDiffNubmers(numberOfChecks, datasetRange)
 	for i := 0; i < numberOfChecks; i++ {
 		randomIndex := randomNumbers[i]
-		fmt.Println(randomIndex)
 		domain := getWebsiteByIndex(randomIndex)
 		result := canReachWebsite(domainToUrl(domain))
 		if result {

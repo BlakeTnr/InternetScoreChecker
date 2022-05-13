@@ -17,11 +17,17 @@ function getClientIPV4Address(req) {
     }
 }
 
-function Client(ip, lastCheckTime) {
-    this.ip = ip
-    this.lastCheckTime = lastCheckTime
-    this.updateLastCheckTime = function() {
+class Client {
+    constructor(ip, lastCheckTime) {
+        this.ip = ip
+        this.lastCheckTime = lastCheckTime
+        this.checkSum = 0;
+        clients.push(this)
+    }
+
+    updateLastCheckTime = function() {
         this.lastCheckTime = Math.floor(new Date().getTime()/1000)
+        this.checkSum += 1;
     }
 }
 
@@ -34,11 +40,33 @@ function updateCheck(client) {
     clients.push(client)
 }
 
+// IP is used to know if it exists or not
+function getExistingClient(ip) {
+    for(let i=0; i<clients.length; i++) {
+        if(ip == clients[i].ip) {
+            return clients[i];
+        }
+    }
+    return null
+}
+
 app.get('/', (req, res) => {
+    /*
     const client = new Client(getClientIPV4Address(req), null)
     client.updateLastCheckTime()
     updateCheck(client)
     res.send(client)
+    */
+    const ip = req.socket.remoteAddrss
+    var client = getExistingClient(ip)
+    if(client != null) {
+        client.updateLastCheckTime()
+        res.send("Already exists")
+    } else {
+        client = new Client(getClientIPV4Address(req), null) // on new client add to clients
+        client.updateLastCheckTime()
+        res.send("Creating")
+    }
 })
 
 app.get('/scores', (req, res) => {
