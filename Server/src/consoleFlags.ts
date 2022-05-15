@@ -25,7 +25,12 @@ export function getTeamsAmount() {
     for(const arg of args) {
         if(arg.toLowerCase().startsWith("teamsamount=")) {
             const argParsed = arg.toLowerCase().replace("teamsamount=", "") //replace with regex
-            return argParsed
+            try {
+                const teamsNumber = parseInt(argParsed)
+                return teamsNumber
+            } catch(error) {
+                console.log("'teamsamount' couldn't be parsed as int")
+            }
         }
     }
     return null

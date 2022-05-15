@@ -2,7 +2,7 @@ import { convertXtoNum, getTeamsAmount } from './consoleFlags'
 import { getClientByIP, Client } from './index'
 
 class Team {
-    teamNumber: Number
+    teamNumber: number
     teamSchema: Array<String>
 
     constructor(teamNumber, teamSchema) {
@@ -56,9 +56,11 @@ class TeamRoundResult {
     }
 }
 
-export function getTeamsScores(clients, teamSchema, teamsAmount) {
+export function getTeamsScores(clients, teamSchema, teamsAmount: number) {
     var teamsScores = []
-    for(var teamNum=1; teamNum<teamsAmount+1; teamNum++) { // +1 to offset starting at team 1
+    console.log(teamsAmount)
+    for(var teamNum=1; teamNum<(teamsAmount+1); teamNum++) { // +1 to offset starting at team 1
+        console.log(teamsAmount+1)
         const team = new Team(teamNum, teamSchema)
         const score = team.getScore(clients);
         const teamRoundResult = new TeamRoundResult(team, score)

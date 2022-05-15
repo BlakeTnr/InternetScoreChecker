@@ -30,8 +30,8 @@ export function getClientByIP(ip) {
 
 export class Client {
     ip: String
-    lastCheckTime: Number
-    checkSum: Number
+    lastCheckTime: number
+    checkSum: number
 
     constructor(ip, lastCheckTime) {
         this.ip = ip
