@@ -18,6 +18,15 @@ function getClientIPV4Address(req) {
     }
 }
 
+function getClientByIP(ip) {
+    for(const client of clients) {
+        if(client.ip == ip) {
+            return client
+        }
+    }
+    return null
+}
+
 class Client {
     constructor(ip, lastCheckTime) {
         this.ip = ip
@@ -86,53 +95,10 @@ app.get('/teamscores', (req, res) => {
     res.send(getTeamsScores(clients, consoleFlags.handleTeamsFlag(), consoleFlags.getTeamsAmount()))
 })
 
-class Team {
-    constructor(teamNumber) {
-        this.teamNumber = teamNumber
-    }
-
-    updateLastCheckTime = function() {
-        this.lastCheckTime = Math.floor(new Date().getTime()/1000)
-        this.checkSum += 1;
-    }
-}
-
-function getTeamsScores(clients, teamSchema, teamsAmount) {
-    var teamsScores = []
-    for(team=1; team<teamsAmount+1; team++) { // +1 to offset starting at team 1
-        const result = getTeamScore(clients, teamSchema, team);
-        var team = new Team(team)
-        team.score = result
-        teamsScores.push(team)
-    }
-    return teamsScores
-}
-
-function getTeamScore(clients, teamSchema, teamNumber) {
-    for(const box of teamSchema) {
-        console.log(box)
-        const ip = consoleFlags.convertXtoNum(box, teamNumber)
-        console.log(ip)
-        const containsIP = clientsContainsIP(clients, ip)
-        console.log(containsIP)
-        if(!containsIP) {
-            return false
-        }
-    }
-    return true
-}
-
-function clientsContainsIP(clients, ip) {
-    for(const client of clients) {
-        if(client.ip == ip) {
-            return true
-        }
-    }
-    return false
-}
-
 app.set('trust proxy', true)
 
 app.listen(port, () => {
     console.log(`InternetScoreTracker server running on port ${port}`)
 })
+
+module.exports = { getClientByIP }
