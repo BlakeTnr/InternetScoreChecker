@@ -1,6 +1,8 @@
 const express = require('express')
+const consoleFlags = require("./consoleFlags")
 const app = express()
 const port = 80
+const teams = consoleFlags.teamsEnabled()
 
 var clients = []
 
@@ -9,7 +11,6 @@ function getClientIPV4Address(req) {
         const remoteAddress = req.socket.remoteAddress
         // Regex = \b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b
         const regex = "\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b"
-        console.log(regex)
         const ipv4Address = remoteAddress.match(regex)[0]
         return ipv4Address
     } catch {
@@ -57,22 +58,78 @@ app.get('/', (req, res) => {
     updateCheck(client)
     res.send(client)
     */
-    const ip = req.socket.remoteAddrss
+    const ip = getClientIPV4Address(req)
     var client = getExistingClient(ip)
     if(client != null) {
         client.updateLastCheckTime()
-        res.send("Already exists")
+        console.log("Updated " + ip)
+        res.send("Updated " + ip)
     } else {
-        client = new Client(getClientIPV4Address(req), null) // on new client add to clients
+        client = new Client(ip, null) // on new client add to clients
         client.updateLastCheckTime()
-        res.send("Creating")
+        console.log("Created " + ip)
+        res.send("Created " + ip)
     }
 })
 
-app.get('/scores', (req, res) => {
+app.get('/rawscores', (req, res) => {
     // Ask Vasu what format he format makes scores easiest for him to read
     res.send(clients)
 })
+
+app.get('/teamscores', (req, res) => {
+    if(!teams) {
+        res.send("Teams not enabled!")
+        return
+    }
+    
+    res.send(getTeamsScores(clients, consoleFlags.handleTeamsFlag(), consoleFlags.getTeamsAmount()))
+})
+
+class Team {
+    constructor(teamNumber) {
+        this.teamNumber = teamNumber
+    }
+
+    updateLastCheckTime = function() {
+        this.lastCheckTime = Math.floor(new Date().getTime()/1000)
+        this.checkSum += 1;
+    }
+}
+
+function getTeamsScores(clients, teamSchema, teamsAmount) {
+    var teamsScores = []
+    for(team=1; team<teamsAmount+1; team++) { // +1 to offset starting at team 1
+        const result = getTeamScore(clients, teamSchema, team);
+        var team = new Team(team)
+        team.score = result
+        teamsScores.push(team)
+    }
+    return teamsScores
+}
+
+function getTeamScore(clients, teamSchema, teamNumber) {
+    for(const box of teamSchema) {
+        console.log(box)
+        const ip = consoleFlags.convertXtoNum(box, teamNumber)
+        console.log(ip)
+        const containsIP = clientsContainsIP(clients, ip)
+        console.log(containsIP)
+        if(!containsIP) {
+            return false
+        }
+    }
+    return true
+}
+
+function clientsContainsIP(clients, ip) {
+    for(const client of clients) {
+        if(client.ip == ip) {
+            return true
+        }
+    }
+    return false
+}
 
 app.set('trust proxy', true)
 
