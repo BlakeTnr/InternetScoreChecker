@@ -18,7 +18,7 @@ function getClientIPV4Address(req) {
     }
 }
 
-function getClientByIP(ip) {
+export function getClientByIP(ip) {
     for(const client of clients) {
         if(client.ip == ip) {
             return client
@@ -27,7 +27,7 @@ function getClientByIP(ip) {
     return null
 }
 
-class Client {
+export class Client {
     constructor(ip, lastCheckTime) {
         this.ip = ip
         this.lastCheckTime = lastCheckTime
@@ -100,5 +100,3 @@ app.set('trust proxy', true)
 app.listen(port, () => {
     console.log(`InternetScoreTracker server running on port ${port}`)
 })
-
-module.exports = { getClientByIP }
