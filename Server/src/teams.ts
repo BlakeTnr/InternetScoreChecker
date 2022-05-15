@@ -56,7 +56,7 @@ class TeamRoundResult {
     }
 }
 
-function getTeamsScores(clients, teamSchema, teamsAmount) {
+export function getTeamsScores(clients, teamSchema, teamsAmount) {
     var teamsScores = []
     for(var teamNum=1; teamNum<teamsAmount+1; teamNum++) { // +1 to offset starting at team 1
         const team = new Team(teamNum, teamSchema)

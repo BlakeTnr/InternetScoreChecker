@@ -3,6 +3,7 @@ const consoleFlags = require("./consoleFlags")
 const app = express()
 const port = 80
 const teams = consoleFlags.teamsEnabled()
+import { getTeamsScores } from "./teams"
 
 var clients = []
 
@@ -28,6 +29,10 @@ export function getClientByIP(ip) {
 }
 
 export class Client {
+    ip: String
+    lastCheckTime: Number
+    checkSum: Number
+
     constructor(ip, lastCheckTime) {
         this.ip = ip
         this.lastCheckTime = lastCheckTime
