@@ -4,35 +4,20 @@ const app = express()
 const port = 80
 const teams = consoleFlags.teamsEnabled()
 import { getTeamsScores } from "./teams"
-import { Client, clients, getClientByIP, remoteAddressToIPV4Address } from './client'
-
-function updateCheck(client) {
-    for(var i=0; i<clients.length; i++) {
-        if(clients[i].ip == client.ip) {
-            clients.splice(i, 1)
-        }
-    }
-    clients.push(client)
-}
+import { Client, clients, getClientByIP, getClientByRemoteAddress, remoteAddressToIPV4Address } from './client'
 
 app.get('/', (req, res) => {
-    /*
-    const client = new Client(getClientIPV4Address(req), null)
-    client.updateLastCheckTime()
-    updateCheck(client)
-    res.send(client)
-    */
-    const ip = remoteAddressToIPV4Address(req.socket.requestAddress)
-    var client = getClientByIP(ip)
+    const address = req.socket.remoteAddress
+    var client = getClientByRemoteAddress(address)
     if(client != null) {
         client.updateLastCheckTime()
-        console.log("Updated " + ip)
-        res.send("Updated " + ip)
+        console.log("Updated " + address)
+        res.send("Updated " + address)
     } else {
-        client = new Client(ip, null) // on new client add to clients
+        client = new Client(address, null) // on new client add to clients
         client.updateLastCheckTime()
-        console.log("Created " + ip)
-        res.send("Created " + ip)
+        console.log("Created " + address)
+        res.send("Created " + address)
     }
 })
 

@@ -24,7 +24,7 @@ class Team {
     hasAllSchemaClients(allClients) {
         const teamClients = this.getTeamClients(allClients)
         for(const client of teamClients) {
-            if(teamClients == null) {
+            if(client == null) {
                 return false
             }
         }
@@ -41,8 +41,18 @@ class Team {
         return false
     }
 
+    getLowestChecksumTime(teamClients) { // Not finished
+        for(const client of teamClients) {
+            client.
+        }
+    }
+
     getScore(allClients) {
-        return this.hasAllSchemaClients(allClients)
+        if(!this.hasAllSchemaClients(allClients)) {
+            return false
+        }
+
+        
     }
 }
 
@@ -58,9 +68,7 @@ class TeamRoundResult {
 
 export function getTeamsScores(clients, teamSchema, teamsAmount: number) {
     var teamsScores = []
-    console.log(teamsAmount)
     for(var teamNum=1; teamNum<(teamsAmount+1); teamNum++) { // +1 to offset starting at team 1
-        console.log(teamsAmount+1)
         const team = new Team(teamNum, teamSchema)
         const score = team.getScore(clients);
         const teamRoundResult = new TeamRoundResult(team, score)
