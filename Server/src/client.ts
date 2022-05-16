@@ -1,12 +1,12 @@
 export var clients = []
 
 export class Client {
-    remoteAddress: String
+    ip: String
     lastCheckTime: number
     checkSum: number
 
-    constructor(remoteAddress, lastCheckTime) {
-        this.remoteAddress = remoteAddress
+    constructor(ip, lastCheckTime) {
+        this.ip = ip
         this.lastCheckTime = lastCheckTime
         this.checkSum = 0;
         clients.push(this)
