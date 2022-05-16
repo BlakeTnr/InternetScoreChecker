@@ -4,18 +4,7 @@ const app = express()
 const port = 80
 const teams = consoleFlags.teamsEnabled()
 import { getTeamsScores } from "./teams"
-import { Client, clients, getClientByIP } from './client'
-
-function remoteAddressToIPV4Address(remoteAddress) {
-    try {
-        // Regex = \b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b
-        const regex = "\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b"
-        const ipv4Address = remoteAddress.match(regex)[0]
-        return ipv4Address
-    } catch {
-        return null
-    }
-}
+import { Client, clients, getClientByIP, remoteAddressToIPV4Address } from './client'
 
 function updateCheck(client) {
     for(var i=0; i<clients.length; i++) {
