@@ -4,45 +4,16 @@ const app = express()
 const port = 80
 const teams = consoleFlags.teamsEnabled()
 import { getTeamsScores } from "./teams"
+import { Client, clients, getClientByIP } from './client'
 
-var clients = []
-
-function getClientIPV4Address(req) {
+function remoteAddressToIPV4Address(remoteAddress) {
     try {
-        const remoteAddress = req.socket.remoteAddress
         // Regex = \b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b
         const regex = "\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b"
         const ipv4Address = remoteAddress.match(regex)[0]
         return ipv4Address
     } catch {
         return null
-    }
-}
-
-export function getClientByIP(ip) {
-    for(const client of clients) {
-        if(client.ip == ip) {
-            return client
-        }
-    }
-    return null
-}
-
-export class Client {
-    ip: String
-    lastCheckTime: number
-    checkSum: number
-
-    constructor(ip, lastCheckTime) {
-        this.ip = ip
-        this.lastCheckTime = lastCheckTime
-        this.checkSum = 0;
-        clients.push(this)
-    }
-
-    updateLastCheckTime = function() {
-        this.lastCheckTime = Math.floor(new Date().getTime()/1000)
-        this.checkSum += 1;
     }
 }
 
@@ -55,16 +26,6 @@ function updateCheck(client) {
     clients.push(client)
 }
 
-// IP is used to know if it exists or not
-function getExistingClient(ip) {
-    for(let i=0; i<clients.length; i++) {
-        if(ip == clients[i].ip) {
-            return clients[i];
-        }
-    }
-    return null
-}
-
 app.get('/', (req, res) => {
     /*
     const client = new Client(getClientIPV4Address(req), null)
@@ -72,8 +33,8 @@ app.get('/', (req, res) => {
     updateCheck(client)
     res.send(client)
     */
-    const ip = getClientIPV4Address(req)
-    var client = getExistingClient(ip)
+    const ip = remoteAddressToIPV4Address(req.socket.requestAddress)
+    var client = getClientByIP(ip)
     if(client != null) {
         client.updateLastCheckTime()
         console.log("Updated " + ip)

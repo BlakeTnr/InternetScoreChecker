@@ -1,5 +1,5 @@
 import { convertXtoNum, getTeamsAmount } from './consoleFlags'
-import { getClientByIP, Client } from './index'
+import { Client, getClientByIP } from './client'
 
 class Team {
     teamNumber: number
