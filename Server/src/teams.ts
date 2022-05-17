@@ -41,28 +41,25 @@ class Team {
         return false
     }
 
-    getLowestChecksumTime(teamClients) { // Not finished
+    getLowestCheckTime(teamClients) { // Not finished
+        const currentTime = Math.floor(new Date().getTime()/1000)
+        var lowestCheckTime = currentTime
         for(const client of teamClients) {
-            client.
+            if(client.lastCheckTime < lowestCheckTime) {
+                lowestCheckTime = client.lastCheckTime
+            }
         }
-    }
-
-    getScore(allClients) {
-        if(!this.hasAllSchemaClients(allClients)) {
-            return false
-        }
-
-        
+        return lowestCheckTime
     }
 }
 
 class TeamRoundResult {
     team: Team
-    score: boolean
+    lowestCheckTime: number
     
-    constructor(team, score) {
+    constructor(team, lowestCheckTime) {
         this.team = team
-        this.score = score
+        this.lowestCheckTime = lowestCheckTime
     }
 }
 
@@ -70,9 +67,16 @@ export function getTeamsScores(clients, teamSchema, teamsAmount: number) {
     var teamsScores = []
     for(var teamNum=1; teamNum<(teamsAmount+1); teamNum++) { // +1 to offset starting at team 1
         const team = new Team(teamNum, teamSchema)
-        const score = team.getScore(clients);
-        const teamRoundResult = new TeamRoundResult(team, score)
-        teamsScores.push(teamRoundResult)
+
+        if(!team.hasAllSchemaClients(clients)) {
+            const teamRoundResult = new TeamRoundResult(team, null)
+            teamsScores.push(teamRoundResult)
+        } else {
+            const teamClients = team.getTeamClients(clients)
+            const lowestCheckTime = team.getLowestCheckTime(teamClients)
+            const teamRoundResult = new TeamRoundResult(team, lowestCheckTime)
+            teamsScores.push(teamRoundResult)
+        }
     }
     return teamsScores
 }
