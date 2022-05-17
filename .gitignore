@@ -162,3 +162,16 @@ dist
 
 # Go workspace file
 go.work
+
+
+
+
+
+
+
+
+
+
+
+
+Server/built/*
