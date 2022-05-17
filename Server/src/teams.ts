@@ -4,14 +4,16 @@ import { Client, getClientByIP } from './client'
 class Team {
     teamNumber: number
     teamSchema: Array<String>
+    teamClients: Array<Client>
 
-    constructor(teamNumber, teamSchema) {
+    constructor(teamNumber, teamSchema, teamClients) {
         this.teamNumber = teamNumber
         this.teamSchema = teamSchema
+        this.teamClients = teamClients
     }
 
     // Gets all clients, if client couldn't be found it is pushed as null to the returned array
-    getTeamClients(allClients) {
+    getTeamClients(allClients) { // Shouldn't be here
         var teamClients = []
         for(const box of this.teamSchema) {
             const ip = convertXtoNum(box, this.teamNumber)
@@ -21,9 +23,8 @@ class Team {
         return teamClients
     }
 
-    hasAllSchemaClients(allClients) {
-        const teamClients = this.getTeamClients(allClients)
-        for(const client of teamClients) {
+    hasAllSchemaClients() {
+        for(const client of this.teamClients) {
             if(client == null) {
                 return false
             }
@@ -31,20 +32,10 @@ class Team {
         return true
     }
 
-    teamHasIP(ip, allClients): boolean {
-        const teamClients = this.getTeamClients(allClients)
-        for(const client of teamClients) {
-            if(client.ip == ip) {
-                return true
-            }
-        }
-        return false
-    }
-
-    getLowestCheckTime(teamClients) { // Not finished
+    getLowestCheckTime() { // Shouldn't be here
         const currentTime = Math.floor(new Date().getTime()/1000)
         var lowestCheckTime = currentTime
-        for(const client of teamClients) {
+        for(const client of this.teamClients) {
             if(client.lastCheckTime < lowestCheckTime) {
                 lowestCheckTime = client.lastCheckTime
             }
